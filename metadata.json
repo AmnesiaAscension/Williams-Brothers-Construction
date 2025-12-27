@@ -1,0 +1,7 @@
+{
+  "name": "Williams Brothers Roofing & Construction",
+  "description": "A high-end, responsive website for Williams Brothers Roofing & Construction, featuring services, reviews, and 24/7 contact information.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
