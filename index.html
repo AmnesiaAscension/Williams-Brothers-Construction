@@ -37,6 +37,23 @@
         .animate-blob {
             animation: blob 7s infinite;
         }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+        .modal-active {
+            overflow: hidden;
+        }
+        #service-modal {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -45,7 +62,7 @@
     <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
                     <div class="bg-blue-600 p-2 rounded-lg">
                         <i data-lucide="shield" class="w-6 h-6 text-white"></i>
                     </div>
@@ -58,6 +75,7 @@
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#services" class="nav-link text-sm font-semibold text-white/90 hover:text-white transition-colors">Services</a>
                     <a href="#about" class="nav-link text-sm font-semibold text-white/90 hover:text-white transition-colors">About</a>
+                    <a href="#faq" class="nav-link text-sm font-semibold text-white/90 hover:text-white transition-colors">FAQ</a>
                     <a href="#reviews" class="nav-link text-sm font-semibold text-white/90 hover:text-white transition-colors">Reviews</a>
                     <a href="#contact" class="nav-link text-sm font-semibold text-white/90 hover:text-white transition-colors">Contact</a>
                     <a href="tel:9363104303" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-200">
@@ -75,10 +93,11 @@
         </div>
 
         <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 overflow-hidden">
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 overflow-hidden shadow-xl">
             <div class="px-4 pt-2 pb-6 space-y-1">
                 <a href="#services" class="mobile-nav-link block px-3 py-4 text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-md">Services</a>
                 <a href="#about" class="mobile-nav-link block px-3 py-4 text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-md">About</a>
+                <a href="#faq" class="mobile-nav-link block px-3 py-4 text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-md">FAQ</a>
                 <a href="#reviews" class="mobile-nav-link block px-3 py-4 text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-md">Reviews</a>
                 <a href="#contact" class="mobile-nav-link block px-3 py-4 text-base font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 rounded-md">Contact</a>
                 <div class="pt-4">
@@ -117,25 +136,6 @@
                         <i data-lucide="phone" class="w-5 h-5"></i> (936) 310-4303
                     </a>
                 </div>
-                
-                <div class="mt-12 flex items-center gap-8">
-                    <div class="flex -space-x-3">
-                        <img class="w-10 h-10 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/11/100/100" alt="Reviewer">
-                        <img class="w-10 h-10 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/12/100/100" alt="Reviewer">
-                        <img class="w-10 h-10 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/13/100/100" alt="Reviewer">
-                        <img class="w-10 h-10 rounded-full border-2 border-slate-900" src="https://picsum.photos/seed/14/100/100" alt="Reviewer">
-                    </div>
-                    <div class="text-sm">
-                        <div class="flex text-yellow-400 gap-0.5 mb-1">
-                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
-                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
-                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
-                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
-                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
-                        </div>
-                        <p class="font-semibold">77+ Satisfied Customers</p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -146,57 +146,70 @@
             <div class="text-center mb-16">
                 <h2 class="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3">Our Expertise</h2>
                 <p class="text-4xl font-extrabold text-slate-900 mb-4">Complete Roofing Solutions</p>
+                <p class="text-slate-500 mb-8">Click on a service to see detailed information</p>
                 <div class="w-20 h-1.5 bg-blue-600 mx-auto rounded-full"></div>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Service 1 -->
-                <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
+                <div onclick="openServiceModal('residential')" class="cursor-pointer group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
                     <div class="bg-white group-hover:bg-blue-600 p-4 rounded-2xl w-fit shadow-sm group-hover:shadow-blue-200 transition-all duration-300 mb-6">
                         <i data-lucide="home" class="w-8 h-8 text-blue-600 group-hover:text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Residential Roofing</h3>
                     <p class="text-slate-600 leading-relaxed mb-6">Expert installation and repair of asphalt shingles, tile, and metal roofs for your home.</p>
-                    <a href="#contact" class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
+                    <span class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                        View Details <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
                 </div>
                 <!-- Service 2 -->
-                <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
+                <div onclick="openServiceModal('commercial')" class="cursor-pointer group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
                     <div class="bg-white group-hover:bg-blue-600 p-4 rounded-2xl w-fit shadow-sm group-hover:shadow-blue-200 transition-all duration-300 mb-6">
                         <i data-lucide="shield" class="w-8 h-8 text-blue-600 group-hover:text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Commercial Roofing</h3>
                     <p class="text-slate-600 leading-relaxed mb-6">Specialized roofing solutions for businesses, including flat roofs and TPO systems.</p>
-                    <a href="#contact" class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
+                    <span class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                        View Details <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
                 </div>
                 <!-- Service 3 -->
-                <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
+                <div onclick="openServiceModal('repair')" class="cursor-pointer group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
                     <div class="bg-white group-hover:bg-blue-600 p-4 rounded-2xl w-fit shadow-sm group-hover:shadow-blue-200 transition-all duration-300 mb-6">
                         <i data-lucide="hammer" class="w-8 h-8 text-blue-600 group-hover:text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Roof Repair</h3>
                     <p class="text-slate-600 leading-relaxed mb-6">Leaking? Storm damage? We provide quick, reliable repairs to protect your investment.</p>
-                    <a href="#contact" class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
+                    <span class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                        View Details <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
                 </div>
                 <!-- Service 4 -->
-                <div class="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
+                <div onclick="openServiceModal('gutters')" class="cursor-pointer group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:border-blue-100 hover:bg-white hover:shadow-2xl hover:shadow-blue-600/5 transition-all duration-300">
                     <div class="bg-white group-hover:bg-blue-600 p-4 rounded-2xl w-fit shadow-sm group-hover:shadow-blue-200 transition-all duration-300 mb-6">
                         <i data-lucide="droplets" class="w-8 h-8 text-blue-600 group-hover:text-white"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Gutter Systems</h3>
                     <p class="text-slate-600 leading-relaxed mb-6">Custom gutter installation and cleaning to ensure proper drainage away from your foundation.</p>
-                    <a href="#contact" class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
+                    <span class="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                        View Details <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Service Detail Modal -->
+    <div id="service-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm opacity-0 transition-opacity">
+        <div class="bg-white w-full max-w-2xl rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+            <button onclick="closeServiceModal()" class="absolute top-6 right-6 p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-500 transition-all z-10">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div id="modal-content" class="p-8 md:p-12 overflow-y-auto max-h-[85vh]">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
 
     <!-- About Section -->
     <section id="about" class="py-24 bg-slate-50 overflow-hidden">
@@ -231,14 +244,6 @@
                             <div class="bg-green-100 p-1 rounded-full"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-600"></i></div>
                             <span class="font-semibold text-slate-700">24/7 Emergency Storm Damage Response</span>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-green-100 p-1 rounded-full"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-600"></i></div>
-                            <span class="font-semibold text-slate-700">Highest Quality Materials & Lifetime Warranties</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-green-100 p-1 rounded-full"><i data-lucide="check-circle-2" class="w-5 h-5 text-green-600"></i></div>
-                            <span class="font-semibold text-slate-700">Family Owned and Locally Operated</span>
-                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-6 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
@@ -262,15 +267,69 @@
         </div>
     </section>
 
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3">FAQ</h2>
+                <p class="text-4xl font-extrabold text-slate-900 mb-4">Common Questions</p>
+                <div class="w-20 h-1.5 bg-blue-600 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="space-y-4" id="faq-list">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item group bg-slate-50 border border-slate-100 rounded-2xl transition-all">
+                    <button class="w-full text-left p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-bold text-lg text-slate-800">Do you offer free estimates?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-6 text-slate-600 leading-relaxed">
+                        Yes, we offer 100% free, no-obligation estimates for all roofing and construction projects. We'll come out to your property, perform a thorough inspection, and provide a detailed quote.
+                    </div>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="faq-item group bg-slate-50 border border-slate-100 rounded-2xl transition-all">
+                    <button class="w-full text-left p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-bold text-lg text-slate-800">Do you help with insurance claims?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-6 text-slate-600 leading-relaxed">
+                        Absolutely. We specialize in storm damage restoration and can work directly with your insurance adjuster to ensure all damage is properly documented and your claim is handled fairly.
+                    </div>
+                </div>
+                <!-- FAQ Item 3 -->
+                <div class="faq-item group bg-slate-50 border border-slate-100 rounded-2xl transition-all">
+                    <button class="w-full text-left p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-bold text-lg text-slate-800">How long does a typical roof replacement take?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-6 text-slate-600 leading-relaxed">
+                        Most residential roof replacements are completed in just 1-2 days. Large commercial projects or roofs with complex architecture may take longer, but we always prioritize efficiency and safety.
+                    </div>
+                </div>
+                <!-- FAQ Item 4 -->
+                <div class="faq-item group bg-slate-50 border border-slate-100 rounded-2xl transition-all">
+                    <button class="w-full text-left p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                        <span class="font-bold text-lg text-slate-800">What areas do you serve?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-6 text-slate-600 leading-relaxed">
+                        We are based in Deer Park, TX, but we serve the entire surrounding region including Pasadena, La Porte, Clear Lake, Friendswood, and parts of Houston.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Reviews Section -->
-    <section id="reviews" class="py-24 bg-white">
+    <section id="reviews" class="py-24 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                 <div class="max-w-xl">
                     <h2 class="text-blue-600 font-bold uppercase tracking-widest text-sm mb-3">Testimonials</h2>
                     <p class="text-4xl font-extrabold text-slate-900 mb-4">What Our Clients Are Saying</p>
                 </div>
-                <div class="flex items-center gap-4 bg-slate-50 px-6 py-4 rounded-2xl border border-slate-100">
+                <div class="flex items-center gap-4 bg-white px-6 py-4 rounded-2xl border border-slate-100">
                     <div class="text-3xl font-black text-slate-900">4.8</div>
                     <div class="flex flex-col">
                         <div class="flex text-yellow-400">
@@ -287,7 +346,7 @@
 
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Review 1 -->
-                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 flex flex-col h-full">
+                <div class="bg-white p-8 rounded-3xl border border-slate-100 flex flex-col h-full shadow-sm">
                     <div class="flex text-yellow-400 mb-4">
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
@@ -305,7 +364,7 @@
                     </div>
                 </div>
                 <!-- Review 2 -->
-                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 flex flex-col h-full">
+                <div class="bg-white p-8 rounded-3xl border border-slate-100 flex flex-col h-full shadow-sm">
                     <div class="flex text-yellow-400 mb-4">
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
@@ -323,7 +382,7 @@
                     </div>
                 </div>
                 <!-- Review 3 -->
-                <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100 flex flex-col h-full">
+                <div class="bg-white p-8 rounded-3xl border border-slate-100 flex flex-col h-full shadow-sm">
                     <div class="flex text-yellow-400 mb-4">
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400"></i>
@@ -377,16 +436,6 @@
                                 <p class="text-xl font-bold leading-relaxed">3500 Center St, Deer Park, TX 77536</p>
                             </div>
                         </div>
-
-                        <div class="flex items-start gap-5">
-                            <div class="bg-blue-600/20 p-4 rounded-2xl text-blue-500">
-                                <i data-lucide="clock" class="w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Working Hours</p>
-                                <p class="text-xl font-bold">Open 24 hours</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -436,7 +485,6 @@
                     <div class="flex gap-4">
                         <a href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-blue-500 transition-all"><i data-lucide="facebook" class="w-5 h-5"></i></a>
                         <a href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-blue-500 transition-all"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-blue-500 transition-all"><i data-lucide="twitter" class="w-5 h-5"></i></a>
                     </div>
                 </div>
 
@@ -444,44 +492,87 @@
                     <h4 class="font-bold text-lg mb-6">Quick Links</h4>
                     <ul class="space-y-4">
                         <li><a href="#services" class="text-slate-400 hover:text-blue-500 transition-colors">Services</a></li>
-                        <li><a href="#about" class="text-slate-400 hover:text-blue-500 transition-colors">About Us</a></li>
-                        <li><a href="#reviews" class="text-slate-400 hover:text-blue-500 transition-colors">Testimonials</a></li>
+                        <li><a href="#about" class="text-slate-400 hover:text-blue-500 transition-colors">About</a></li>
+                        <li><a href="#faq" class="text-slate-400 hover:text-blue-500 transition-colors">FAQ</a></li>
                         <li><a href="#contact" class="text-slate-400 hover:text-blue-500 transition-colors">Contact</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 class="font-bold text-lg mb-6">Contact Info</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-3">
-                            <i data-lucide="map-pin" class="w-5 h-5 text-blue-500 mt-1"></i>
-                            <span class="text-slate-400">3500 Center St, Deer Park, TX 77536</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i data-lucide="phone" class="w-5 h-5 text-blue-500"></i>
-                            <span class="text-slate-400">(936) 310-4303</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i data-lucide="clock" class="w-5 h-5 text-blue-500"></i>
-                            <span class="text-slate-400">Open 24 hours</span>
-                        </li>
+                    <ul class="space-y-4 text-slate-400">
+                        <li class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-blue-500"></i> 3500 Center St, Deer Park</li>
+                        <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-blue-500"></i> (936) 310-4303</li>
                     </ul>
                 </div>
             </div>
-
-            <div class="pt-10 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-slate-500 text-sm">
-                    &copy; <span id="year"></span> Williams Brothers Roofing & Construction. All rights reserved.
-                </p>
-                <div class="flex gap-8 text-sm text-slate-500">
-                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
-                </div>
+            <div class="pt-10 border-t border-slate-900 text-center text-slate-500 text-sm">
+                &copy; <span id="year"></span> Williams Brothers Roofing & Construction.
             </div>
         </div>
     </footer>
 
     <script>
+        // Data for Detailed Services
+        const serviceDetails = {
+            residential: {
+                title: "Residential Roofing",
+                icon: "home",
+                description: "Our residential roofing services are designed to protect your most valuable asset: your home. We use only top-tier materials from manufacturers like GAF and Owens Corning.",
+                bullets: [
+                    "Asphalt Shingle Installation & Replacement",
+                    "Custom Metal Roofing Systems",
+                    "Clay & Concrete Tile Roofing",
+                    "Comprehensive Roof Inspections",
+                    "Attic Ventilation Analysis",
+                    "Lifetime Material Warranties Available"
+                ],
+                cta: "Schedule a Residential Inspection"
+            },
+            commercial: {
+                title: "Commercial Roofing",
+                icon: "shield",
+                description: "We provide durable, energy-efficient roofing solutions for commercial properties, warehouses, and industrial facilities throughout Texas.",
+                bullets: [
+                    "TPO & PVC Single-Ply Membranes",
+                    "Modified Bitumen Systems",
+                    "Flat Roof Leak Detection & Repair",
+                    "Commercial Roof Maintenance Programs",
+                    "Roof Coating Systems (Silicone/Acrylic)",
+                    "Emergency Patching for Businesses"
+                ],
+                cta: "Request a Commercial Quote"
+            },
+            repair: {
+                title: "Emergency Roof Repair",
+                icon: "hammer",
+                description: "Roofing emergencies don't wait for business hours. Our 24/7 rapid response team is ready to handle leaks, storm damage, and structural issues immediately.",
+                bullets: [
+                    "24/7 Emergency Tarping",
+                    "Hail & Wind Damage Restoration",
+                    "Leak Detection & Thermal Imaging",
+                    "Shingle Patching & Ridge Vent Repair",
+                    "Insurance Claim Documentation",
+                    "Skylight Repair & Resealing"
+                ],
+                cta: "Call for Emergency Service"
+            },
+            gutters: {
+                title: "Gutter & Drainage Systems",
+                icon: "droplets",
+                description: "Proper water management is critical for protecting your foundation. We install high-capacity, seamless gutter systems tailored to your roofline.",
+                bullets: [
+                    "Seamless Aluminum Gutters (5\" and 6\")",
+                    "Custom Gutter Guards & Leaf Protection",
+                    "Downspout Extension & Drainage Planning",
+                    "Professional Gutter Cleaning",
+                    "Fascia & Soffit Repair",
+                    "Multiple Color Options Available"
+                ],
+                cta: "Get a Gutter Estimate"
+            }
+        };
+
         // Initialize Lucide Icons
         lucide.createIcons();
 
@@ -522,22 +613,86 @@
             });
         });
 
-        // Simple Fade-in for Hero
+        // Hero Animation
         window.addEventListener('DOMContentLoaded', () => {
             const heroContent = document.getElementById('hero-content');
             heroContent.classList.remove('opacity-0', 'translate-y-8');
             heroContent.classList.add('opacity-100', 'translate-y-0');
         });
 
-        // Contact Form Mock Submission
+        // FAQ Toggle Logic
+        function toggleFaq(button) {
+            const item = button.parentElement;
+            const isActive = item.classList.contains('active');
+            
+            // Close all other items
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+            
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Service Modal Logic
+        function openServiceModal(serviceKey) {
+            const detail = serviceDetails[serviceKey];
+            const modal = document.getElementById('service-modal');
+            const content = document.getElementById('modal-content');
+            
+            content.innerHTML = `
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="bg-blue-600 p-4 rounded-2xl text-white">
+                        <i data-lucide="${detail.icon}" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900">${detail.title}</h2>
+                </div>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">${detail.description}</p>
+                <div class="bg-slate-50 p-6 rounded-3xl mb-10 border border-slate-100">
+                    <h4 class="font-bold text-slate-900 mb-4 uppercase tracking-wider text-sm">Key Features</h4>
+                    <ul class="grid md:grid-cols-2 gap-4">
+                        ${detail.bullets.map(b => `
+                            <li class="flex items-start gap-2 text-slate-700 font-medium">
+                                <i data-lucide="check" class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"></i>
+                                ${b}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <a href="#contact" onclick="closeServiceModal()" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl text-lg font-bold transition-all">
+                    ${detail.cta}
+                </a>
+            `;
+            
+            modal.classList.remove('hidden');
+            document.body.classList.add('modal-active');
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+            }, 10);
+        }
+
+        function closeServiceModal() {
+            const modal = document.getElementById('service-modal');
+            modal.classList.remove('opacity-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.classList.remove('modal-active');
+            }, 300);
+        }
+
+        // Close modal on escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeServiceModal();
+        });
+
+        // Contact Form Submission
         const contactForm = document.getElementById('contact-form');
         const formContainer = document.getElementById('contact-form-container');
 
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
-            const originalText = submitBtn.innerHTML;
-            
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Sending...';
 
@@ -547,11 +702,9 @@
                         <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
                             <i data-lucide="check-circle-2" class="w-10 h-10 text-green-600"></i>
                         </div>
-                        <h4 class="text-2xl font-bold mb-2 text-slate-900">Message Sent!</h4>
-                        <p class="text-slate-600 mb-8">Thank you for reaching out. We'll be in touch very soon to discuss your project.</p>
-                        <button onclick="window.location.reload()" class="text-blue-600 font-bold hover:underline">
-                            Send another message
-                        </button>
+                        <h4 class="text-2xl font-bold mb-2 text-slate-900">Request Received!</h4>
+                        <p class="text-slate-600 mb-8">One of our roofing specialists will contact you within 24 hours.</p>
+                        <button onclick="window.location.reload()" class="text-blue-600 font-bold hover:underline">Send another message</button>
                     </div>
                 `;
                 lucide.createIcons();
